@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="offers-hero"
+    style="height: 40vh; background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('{{ theme.contact_page.hero_background_image }}');">
+    <div class="hero-content">
+        <span class="badge">{{ theme.contact_page.hero_badge }}</span>
+        <h2>{{ theme.contact_page.hero_title }}</h2>
+        <p>{{ theme.contact_page.hero_description }}</p>
+    </div>
+</section>
+
+<section class="contact-page-section" style="padding: 5rem 5%; background: white;">
+    <div class="contact-container" style="max-width: 800px; margin: 0 auto;">
+
+        <div class="footer-contact-form">
+            <h3 style="color: var(--primary); font-size: 2rem; margin-bottom: 1rem;">{{ theme.contact_page.form_title }}</h3>
+            <p style="color: var(--text-dark); margin-bottom: 2rem;">{{ theme.contact_page.form_description }}</p>
+            <form id="approachForm" class="contact-form-grid"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" placeholder="Full Name" required
+                        style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #ddd; outline: none;">
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="mobile" name="mobile" placeholder="Mobile Number" required
+                        style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #ddd; outline: none;">
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="backup_mobile" name="backup_mobile" placeholder="Backup Mobile (Optional)"
+                        style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #ddd; outline: none;">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="location" name="location" placeholder="Country and City" required
+                        style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #ddd; outline: none;">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <input type="email" id="email" name="email" placeholder="Email Address" required
+                        style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #ddd; outline: none;">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <textarea id="notes" name="notes" placeholder="Notes or Questions" rows="4"
+                        style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #ddd; outline: none;"></textarea>
+                </div>
+                <button type="submit" class="cta-button" style="grid-column: span 2; cursor: pointer;">{{ theme.contact_page.submit_text }}</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('approachForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const mobile = document.getElementById('mobile').value;
+        const backupMobile = document.getElementById('backup_mobile').value;
+        const location = document.getElementById('location').value;
+        const email = document.getElementById('email').value;
+        const notes = document.getElementById('notes').value;
+
+        const message = `Hello Ehab, I'm interested in a property. Here are my details:
+- Name: ${name}
+- Mobile: ${mobile}
+- Backup Mobile: ${backupMobile || 'N/A'}
+- Location: ${location}
+- Email: ${email}
+- Notes: ${notes || 'No specific notes'}`;
+
+        const encodedMessage = encodeURIComponent(message);
+        const phone = "{{ consultant.phone1 | replace(' ', '') | replace('+', '') }}";
+
+        window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+        alert('Opening WhatsApp to send your request...');
+        this.reset();
+    });
+</script>
+{% endblock %}

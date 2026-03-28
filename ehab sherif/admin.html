@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Ehab Sherif Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --sidebar: #0f172a;
+            --primary: #3b82f6;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --white: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        /* Sidebar */
+        aside {
+            width: 280px;
+            background: var(--sidebar);
+            color: white;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            flex-shrink: 0;
+            z-index: 100;
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand i {
+            color: var(--primary);
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: rgba(59, 130, 246, 0.15);
+            color: white;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        nav a.active i {
+            color: var(--primary);
+        }
+
+        .logout {
+            margin-top: auto;
+            color: #fca5a5;
+        }
+
+        /* Main Content */
+        main {
+            flex-grow: 1;
+            margin-right: 280px;
+            padding: 2.5rem;
+            max-width: 1200px;
+            width: calc(100% - 280px);
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .header-bar h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .section-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+            box-shadow: var(--card-shadow);
+            scroll-margin-top: 1.5rem;
+        }
+
+        .section-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-note {
+            margin: -0.75rem 0 1.5rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        input,
+        textarea,
+        select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: #fcfcfc;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.05);
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="color"] {
+            min-height: 52px;
+            padding: 0.35rem;
+            cursor: pointer;
+        }
+
+        .theme-group {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            background: #fafafa;
+        }
+
+        .theme-group + .theme-group {
+            margin-top: 1.25rem;
+        }
+
+        .theme-group h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        /* Lists for Projects and Offers */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .item-entry {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            background: #fafafa;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .add-item-btn {
+            margin-top: 1rem;
+            background: transparent;
+            border: 2px dashed var(--border);
+            color: var(--text-muted);
+            padding: 1rem;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-item-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.02);
+        }
+
+        /* Nested List for Units */
+        .units-list {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        .unit-entry {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr auto;
+            gap: 0.75rem;
+            align-items: end;
+            margin-bottom: 0.75rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        /* Success/Error Toasts */
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        #toast.success { background: var(--success); }
+        #toast.error { background: var(--danger); }
+
+        @media (max-width: 960px) {
+            body {
+                display: block;
+            }
+
+            aside {
+                position: sticky;
+                width: 100%;
+                height: auto;
+                border-left: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+
+            main {
+                margin-right: 0;
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .header-bar {
+                gap: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .grid-form,
+            .unit-entry {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside>
+        <div class="brand">
+            <i class="fas fa-crown"></i>
+            <span>Admin Control</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/" target="_blank"><i class="fas fa-external-link"></i> View Site</a></li>
+                <li><a href="#theme" class="active" data-section="theme"><i class="fas fa-palette"></i> Theme Studio</a></li>
+                <li><a href="#consultant" data-section="consultant"><i class="fas fa-user-tie"></i> Consultant Profile</a></li>
+                <li><a href="#projects" data-section="projects"><i class="fas fa-building"></i> Projects & Units</a></li>
+                <li><a href="#offers" data-section="offers"><i class="fas fa-percent"></i> Offers & Promotions</a></li>
+                <li><a href="/logout" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main id="app">
+        <div class="header-bar">
+            <h2>Welcome back, Ehab</h2>
+            <button class="save-btn" onclick="saveAll()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+
+        <div class="section-card" id="theme">
+            <h3>Theme Studio</h3>
+            <p class="section-note">Control the site's main text, section labels, contact details, hero images, and brand colors from one place.</p>
+
+            <div class="theme-group">
+                <h4>Branding</h4>
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label>Browser Title Suffix</label>
+                        <input type="text" id="theme-site-title-suffix" value="{{ data.theme.branding.site_title_suffix }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Email</label>
+                        <input type="email" id="theme-contact-email" value="{{ data.theme.branding.contact_email }}">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Meta Description</label>
+                        <textarea id="theme-meta-description">{{ data.theme.branding.meta_description }}</textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Footer Rights Text</label>
+                        <input type="text" id="theme-footer-rights-text" value="{{ data.theme.branding.footer_rights_text }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="theme-group">
+                <h4>Colors</h4>
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label>Primary Color</label>
+                        <input type="color" id="theme-color-primary" value="{{ data.theme.colors.primary }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Secondary Color</label>
+                        <input type="color" id="theme-color-secondary" value="{{ data.theme.colors.secondary }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Accent Color</label>
+                        <input type="color" id="theme-color-accent" value="{{ data.theme.colors.accent }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Light Text Color</label>
+                        <input type="color" id="theme-color-text-light" value="{{ data.theme.colors.text_light }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Muted Text Color</label>
+                        <input type="color" id="theme-color-text-dark" value="{{ data.theme.colors.text_dark }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Page Background</label>
+                        <input type="color" id="theme-color-bg-light" value="{{ data.theme.colors.bg_light }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Dark Background</label>
+                        <input type="color" id="theme-color-bg-dark" value="{{ data.theme.colors.bg_dark }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="theme-group">
+                <h4>Navigation Labels</h4>
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label>Home Label</label>
+                        <input type="text" id="theme-nav-home" value="{{ data.theme.navigation.home_label }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Projects Label</label>
+                        <input type="text" id="theme-nav-projects" value="{{ data.theme.navigation.projects_label }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Label</label>
+                        <input type="text" id="theme-nav-contact" value="{{ data.theme.navigation.contact_label }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="theme-group">
+                <h4>Home Page</h4>
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label>Hero Title</label>
+                        <input type="text" id="theme-home-hero-title" value="{{ data.theme.home.hero_title }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Hero Button Text</label>
+                        <input type="text" id="theme-home-hero-cta" value="{{ data.theme.home.hero_cta_text }}">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Hero Description</label>
+                        <textarea id="theme-home-hero-description">{{ data.theme.home.hero_description }}</textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Hero Background Image URL</label>
+                        <input type="text" id="theme-home-hero-image" value="{{ data.theme.home.hero_background_image }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Offers Section Title</label>
+                        <input type="text" id="theme-home-offers-title" value="{{ data.theme.home.offers_section_title }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Offers Section Description</label>
+                        <input type="text" id="theme-home-offers-description" value="{{ data.theme.home.offers_section_description }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="theme-group">
+                <h4>Projects Page</h4>
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label>Projects Title</label>
+                        <input type="text" id="theme-projects-title" value="{{ data.theme.projects_page.title }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Card CTA Text</label>
+                        <input type="text" id="theme-projects-card-cta" value="{{ data.theme.projects_page.card_cta_text }}">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Projects Description</label>
+                        <textarea id="theme-projects-description">{{ data.theme.projects_page.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Units Section Title</label>
+                        <input type="text" id="theme-projects-units-title" value="{{ data.theme.projects_page.units_title }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Map Section Title</label>
+                        <input type="text" id="theme-projects-map-title" value="{{ data.theme.projects_page.map_title }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="theme-group">
+                <h4>Contact Page</h4>
+                <div class="grid-form">
+                    <div class="form-group">
+                        <label>Hero Badge</label>
+                        <input type="text" id="theme-contact-badge" value="{{ data.theme.contact_page.hero_badge }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Hero Title</label>
+                        <input type="text" id="theme-contact-title" value="{{ data.theme.contact_page.hero_title }}">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Hero Description</label>
+                        <textarea id="theme-contact-description">{{ data.theme.contact_page.hero_description }}</textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Hero Background Image URL</label>
+                        <input type="text" id="theme-contact-image" value="{{ data.theme.contact_page.hero_background_image }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Form Title</label>
+                        <input type="text" id="theme-contact-form-title" value="{{ data.theme.contact_page.form_title }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Submit Button Text</label>
+                        <input type="text" id="theme-contact-submit" value="{{ data.theme.contact_page.submit_text }}">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Form Description</label>
+                        <textarea id="theme-contact-form-description">{{ data.theme.contact_page.form_description }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consultant Info -->
+        <div class="section-card" id="consultant">
+            <h3>Consultant Information</h3>
+            <div class="grid-form">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="c-name" value="{{ data.consultant.name }}">
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="c-title" value="{{ data.consultant.title }}">
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" id="c-company" value="{{ data.consultant.company }}">
+                </div>
+                <div class="form-group">
+                    <label>Phone 1</label>
+                    <input type="text" id="c-phone1" value="{{ data.consultant.phone1 }}">
+                </div>
+                <div class="form-group">
+                    <label>Phone 2</label>
+                    <input type="text" id="c-phone2" value="{{ data.consultant.phone2 }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="section-card" id="projects">
+            <h3>Manage Projects</h3>
+            <div id="projects-container" class="item-list">
+                <!-- Projects injected here -->
+            </div>
+            <button class="add-item-btn" onclick="addProject()">
+                <i class="fas fa-plus"></i> Add New Project
+            </button>
+        </div>
+
+        <!-- Offers -->
+        <div class="section-card" id="offers">
+            <h3>Manage Offers</h3>
+            <div id="offers-container" class="item-list">
+                <!-- Offers injected here -->
+            </div>
+            <button class="add-item-btn" onclick="addOffer()">
+                <i class="fas fa-plus"></i> Add New Offer
+            </button>
+        </div>
+    </main>
+
+    <div id="toast">Changes saved successfully!</div>
+
+    <script>
+        let siteData = {{ data | tojson }};
+
+        function init() {
+            renderProjects();
+            renderOffers();
+            initSectionNav();
+        }
+
+        function initSectionNav() {
+            const links = Array.from(document.querySelectorAll('nav a[data-section]'));
+            const sections = links
+                .map((link) => document.getElementById(link.dataset.section))
+                .filter(Boolean);
+
+            function setActiveSection(sectionId) {
+                links.forEach((link) => {
+                    link.classList.toggle('active', link.dataset.section === sectionId);
+                });
+            }
+
+            links.forEach((link) => {
+                link.addEventListener('click', () => setActiveSection(link.dataset.section));
+            });
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    const visibleEntry = entries
+                        .filter((entry) => entry.isIntersecting)
+                        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+                    if (visibleEntry) {
+                        setActiveSection(visibleEntry.target.id);
+                    }
+                }, {
+                    rootMargin: '-25% 0px -55% 0px',
+                    threshold: [0.2, 0.45, 0.7]
+                });
+
+                sections.forEach((section) => observer.observe(section));
+            } else {
+                window.addEventListener('scroll', () => {
+                    const currentSection = sections.find((section) => {
+                        const rect = section.getBoundingClientRect();
+                        return rect.top <= 180 && rect.bottom >= 180;
+                    });
+
+                    if (currentSection) {
+                        setActiveSection(currentSection.id);
+                    }
+                });
+            }
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
+            siteData.projects.forEach((project, pIdx) => {
+                const div = document.createElement('div');
+                div.className = 'item-entry';
+                div.innerHTML = `
+                    <button class="remove-btn" onclick="removeItem('projects', ${pIdx})"><i class="fas fa-trash"></i></button>
+                    <div class="grid-form">
+                        <div class="form-group">
+                            <label>Project Name</label>
+                            <input type="text" onchange="updateVal('projects', ${pIdx}, 'name', this.value)" value="${project.name}">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" onchange="updateVal('projects', ${pIdx}, 'location', this.value)" value="${project.location}">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Main Image URL</label>
+                            <input type="text" onchange="updateVal('projects', ${pIdx}, 'image', this.value)" value="${project.image}">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Description</label>
+                            <textarea onchange="updateVal('projects', ${pIdx}, 'description', this.value)">${project.description}</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="units-list">
+                        <label style="margin-bottom: 0.5rem; display: block;">Units</label>
+                        <div id="units-${pIdx}">
+                            ${project.units.map((unit, uIdx) => `
+                                <div class="unit-entry">
+                                    <div class="form-group"><label>Type</label><input type="text" value="${unit.type}" onchange="updateUnit(${pIdx}, ${uIdx}, 'type', this.value)"></div>
+                                    <div class="form-group"><label>Size</label><input type="text" value="${unit.size}" onchange="updateUnit(${pIdx}, ${uIdx}, 'size', this.value)"></div>
+                                    <div class="form-group"><label>DP</label><input type="text" value="${unit.down_payment}" onchange="updateUnit(${pIdx}, ${uIdx}, 'down_payment', this.value)"></div>
+                                    <div class="form-group"><label>Installments</label><input type="text" value="${unit.installments}" onchange="updateUnit(${pIdx}, ${uIdx}, 'installments', this.value)"></div>
+                                    <div class="form-group"><label>Image URL</label><input type="text" value="${unit.image || ''}" onchange="updateUnit(${pIdx}, ${uIdx}, 'image', this.value)"></div>
+                                    <button class="remove-btn" style="position:static; margin-top: auto;" onclick="removeUnit(${pIdx}, ${uIdx})"><i class="fas fa-times"></i></button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="add-item-btn" style="padding: 0.5rem; font-size: 0.8rem;" onclick="addUnit(${pIdx})">+ Add Unit</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderOffers() {
+            const container = document.getElementById('offers-container');
+            container.innerHTML = '';
+            siteData.offers.forEach((offer, oIdx) => {
+                const div = document.createElement('div');
+                div.className = 'item-entry';
+                div.innerHTML = `
+                    <button class="remove-btn" onclick="removeItem('offers', ${oIdx})"><i class="fas fa-trash"></i></button>
+                    <div class="grid-form">
+                        <div class="form-group">
+                            <label>Offer Title</label>
+                            <input type="text" onchange="updateVal('offers', ${oIdx}, 'title', this.value)" value="${offer.title}">
+                        </div>
+                        <div class="form-group">
+                            <label>Badge (e.g., Seasonal)</label>
+                            <input type="text" onchange="updateVal('offers', ${oIdx}, 'badge', this.value)" value="${offer.badge}">
+                        </div>
+                        <div class="form-group">
+                            <label>Expiry</label>
+                            <input type="text" onchange="updateVal('offers', ${oIdx}, 'expiry', this.value)" value="${offer.expiry}">
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input type="text" onchange="updateVal('offers', ${oIdx}, 'image', this.value)" value="${offer.image}">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Description</label>
+                            <textarea onchange="updateVal('offers', ${oIdx}, 'description', this.value)">${offer.description}</textarea>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Helper Functions
+        function updateVal(section, idx, key, val) {
+            siteData[section][idx][key] = val;
+        }
+
+        function updateUnit(pIdx, uIdx, key, val) {
+            siteData.projects[pIdx].units[uIdx][key] = val;
+        }
+
+        function removeItem(section, idx) {
+            siteData[section].splice(idx, 1);
+            if(section === 'projects') renderProjects();
+            else renderOffers();
+        }
+
+        function removeUnit(pIdx, uIdx) {
+            siteData.projects[pIdx].units.splice(uIdx, 1);
+            renderProjects();
+        }
+
+        function addProject() {
+            siteData.projects.push({
+                id: Date.now(),
+                name: "New Project",
+                location: "",
+                image: "",
+                description: "",
+                units: [],
+                gallery: [],
+                map_url: ""
+            });
+            renderProjects();
+        }
+
+        function addOffer() {
+            siteData.offers.push({
+                id: Date.now(),
+                title: "New Offer",
+                description: "",
+                expiry: "",
+                badge: "Limited",
+                image: ""
+            });
+            renderOffers();
+        }
+
+        function addUnit(pIdx) {
+            siteData.projects[pIdx].units.push({
+                type: "",
+                size: "",
+                down_payment: "",
+                installments: "",
+                image: ""
+            });
+            renderProjects();
+        }
+
+        async function saveAll() {
+            const getValue = (id) => document.getElementById(id).value;
+
+            // Update consultant profile from inputs
+            siteData.consultant.name = document.getElementById('c-name').value;
+            siteData.consultant.title = document.getElementById('c-title').value;
+            siteData.consultant.company = document.getElementById('c-company').value;
+            siteData.consultant.phone1 = document.getElementById('c-phone1').value;
+            siteData.consultant.phone2 = document.getElementById('c-phone2').value;
+
+            siteData.theme.branding.site_title_suffix = getValue('theme-site-title-suffix');
+            siteData.theme.branding.meta_description = getValue('theme-meta-description');
+            siteData.theme.branding.contact_email = getValue('theme-contact-email');
+            siteData.theme.branding.footer_rights_text = getValue('theme-footer-rights-text');
+
+            siteData.theme.colors.primary = getValue('theme-color-primary');
+            siteData.theme.colors.secondary = getValue('theme-color-secondary');
+            siteData.theme.colors.accent = getValue('theme-color-accent');
+            siteData.theme.colors.text_light = getValue('theme-color-text-light');
+            siteData.theme.colors.text_dark = getValue('theme-color-text-dark');
+            siteData.theme.colors.bg_light = getValue('theme-color-bg-light');
+            siteData.theme.colors.bg_dark = getValue('theme-color-bg-dark');
+
+            siteData.theme.navigation.home_label = getValue('theme-nav-home');
+            siteData.theme.navigation.projects_label = getValue('theme-nav-projects');
+            siteData.theme.navigation.contact_label = getValue('theme-nav-contact');
+
+            siteData.theme.home.hero_title = getValue('theme-home-hero-title');
+            siteData.theme.home.hero_description = getValue('theme-home-hero-description');
+            siteData.theme.home.hero_cta_text = getValue('theme-home-hero-cta');
+            siteData.theme.home.hero_background_image = getValue('theme-home-hero-image');
+            siteData.theme.home.offers_section_title = getValue('theme-home-offers-title');
+            siteData.theme.home.offers_section_description = getValue('theme-home-offers-description');
+
+            siteData.theme.projects_page.title = getValue('theme-projects-title');
+            siteData.theme.projects_page.description = getValue('theme-projects-description');
+            siteData.theme.projects_page.card_cta_text = getValue('theme-projects-card-cta');
+            siteData.theme.projects_page.units_title = getValue('theme-projects-units-title');
+            siteData.theme.projects_page.map_title = getValue('theme-projects-map-title');
+
+            siteData.theme.contact_page.hero_badge = getValue('theme-contact-badge');
+            siteData.theme.contact_page.hero_title = getValue('theme-contact-title');
+            siteData.theme.contact_page.hero_description = getValue('theme-contact-description');
+            siteData.theme.contact_page.hero_background_image = getValue('theme-contact-image');
+            siteData.theme.contact_page.form_title = getValue('theme-contact-form-title');
+            siteData.theme.contact_page.form_description = getValue('theme-contact-form-description');
+            siteData.theme.contact_page.submit_text = getValue('theme-contact-submit');
+
+            try {
+                const response = await fetch('/admin/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(siteData)
+                });
+                
+                if (response.ok) showToast("All changes saved correctly!", "success");
+                else showToast("Failed to save changes.", "error");
+            } catch (e) {
+                showToast("Connection error. Try again.", "error");
+            }
+        }
+
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.className = type + ' show';
+            t.innerText = msg;
+            setTimeout(() => t.className = '', 3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
