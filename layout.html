@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ consultant.name }} | {{ theme.branding.site_title_suffix }}</title>
+    <meta name="description" content="{{ theme.branding.meta_description }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: {{ theme.colors.primary }};
+            --secondary: {{ theme.colors.secondary }};
+            --accent: {{ theme.colors.accent }};
+            --text-light: {{ theme.colors.text_light }};
+            --text-dark: {{ theme.colors.text_dark }};
+            --bg-light: {{ theme.colors.bg_light }};
+            --bg-dark: {{ theme.colors.bg_dark }};
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <h1>{{ consultant.name }}</h1>
+            <span>{{ consultant.title }} @ {{ consultant.company }}</span>
+        </div>
+        <nav class="nav-links">
+            <a href="/">{{ theme.navigation.home_label }}</a>
+            <a href="/projects">{{ theme.navigation.projects_label }}</a>
+            <a href="/contact">{{ theme.navigation.contact_label }}</a>
+        </nav>
+        <div class="contact-info-header">
+            <a href="tel:{{ consultant.phone1 | replace(' ', '') }}">{{ consultant.phone1 }}</a>
+            <a href="tel:{{ consultant.phone2 | replace(' ', '') }}">{{ consultant.phone2 }}</a>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer id="footer">
+        <div class="footer-content"
+            style="display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 2rem;">
+            <div class="footer-about">
+                <h3 style="color: white;">{{ consultant.name }}</h3>
+                <p>{{ consultant.title }}</p>
+                <p>{{ consultant.company }}</p>
+                <div style="margin-top: 1.5rem; display: flex; gap: 1.5rem; justify-content: center;">
+                    <a href="tel:{{ consultant.phone1 | replace(' ', '') }}" style="color: var(--secondary);"><i
+                            class="fas fa-phone"></i></a>
+                    <a href="tel:{{ consultant.phone2 | replace(' ', '') }}" style="color: var(--secondary);"><i
+                            class="fas fa-phone"></i></a>
+                    <a href="https://wa.me/{{ consultant.phone1 | replace(' ', '') | replace('+', '') }}"
+                        style="color: var(--secondary);"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://wa.me/{{ consultant.phone2 | replace(' ', '') | replace('+', '') }}"
+                        style="color: var(--secondary);"><i class="fab fa-whatsapp"></i></a>
+                    <a href="mailto:{{ theme.branding.contact_email }}" style="color: var(--secondary);"><i
+                            class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom" style="padding-top: 1.5rem; text-align: center;">
+            &copy; {{ consultant.name }} | {{ theme.branding.site_title_suffix }}. {{ theme.branding.footer_rights_text }}
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="projects-section">
+    <div class="section-title">
+        <h2>{{ theme.projects_page.title }}</h2>
+        <p>{{ theme.projects_page.description }}</p>
+    </div>
+
+    <div class="project-grid">
+        {% for project in projects %}
+        <div class="project-card" onclick="openProjectModal({{ project.id }})" id="project-{{ project.id }}">
+            <img src="{{ project.image }}" alt="{{ project.name }}">
+            <div class="project-content">
+                <h3>{{ project.name }}</h3>
+                <p>{{ project.location }}</p>
+                <div class="project-meta">
+                    <span style="color: var(--secondary); font-weight: 600;">{{ theme.projects_page.card_cta_text }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Project Modal -->
+<div id="projectModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="modalBody" class="modal-body">
+            <!-- Content will be loaded via JS -->
+            <div class="loading">Loading details...</div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function openProjectModal(projectId) {
+        const modal = document.getElementById('projectModal');
+        const modalBody = document.getElementById('modalBody');
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
+        try {
+            const response = await fetch(`/api/projects/${projectId}`);
+            const project = await response.json();
+
+            let galleryHtml = '';
+            if (project.gallery && project.gallery.length > 0) {
+                galleryHtml = `
+                    <div class="project-gallery">
+                        ${project.gallery.map(img => `<img src="${img}" alt="Gallery image">`).join('')}
+                    </div>
+                `;
+            }
+
+            let unitHtml = '';
+            project.units.forEach(unit => {
+                unitHtml += `
+                    <div class="unit-card">
+                        ${unit.image ? `<img src="${unit.image}" alt="${unit.type}" class="unit-image">` : ''}
+                        <div class="unit-details">
+                            <h4>${unit.type}</h4>
+                            <p><strong>Size:</strong> ${unit.size}</p>
+                            <p><strong>Down Payment:</strong> ${unit.down_payment}</p>
+                            <p><strong>Installments:</strong> ${unit.installments}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            modalBody.innerHTML = `
+                <div class="modal-header-info">
+                    <div>
+                        <h2 style="color: var(--primary); font-size: 2rem; margin-bottom: 0.5rem;">${project.name}</h2>
+                        <p style="color: var(--text-dark); margin-bottom: 1rem;"><i class="fas fa-map-marker-alt"></i> ${project.location}</p>
+                    </div>
+                </div>
+                
+                <div class="project-main-info">
+                    <div class="project-modal-image-container">
+                        <div class="project-modal-image">
+                            <img src="${project.image}" alt="${project.name}" id="mainModalImage">
+                        </div>
+                        ${galleryHtml}
+                    </div>
+                    <div class="project-description">
+                        <p>${project.description}</p>
+                    </div>
+                </div>
+
+                <h3>{{ theme.projects_page.units_title }}</h3>
+                <div class="unit-list">
+                    ${unitHtml}
+                </div>
+
+                <h3>{{ theme.projects_page.map_title }}</h3>
+                <div class="map-container">
+                    <iframe src="${project.map_url}" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            `;
+
+            // Add click events for gallery images to swap main image
+            const galleryImages = modalBody.querySelectorAll('.project-gallery img');
+            const mainImg = modalBody.querySelector('#mainModalImage');
+            galleryImages.forEach(img => {
+                img.onclick = () => {
+                    const temp = mainImg.src;
+                    mainImg.src = img.src;
+                    // Optional: swap back or just change
+                };
+            });
+
+            // Set hash without jumping
+            history.pushState(null, null, `#project-${projectId}`);
+        } catch (error) {
+            modalBody.innerHTML = '<p>Error loading project details. Please try again later.</p>';
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('projectModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        // Clear hash
+        history.pushState(null, null, ' ');
+    }
+
+    window.onclick = function (event) {
+        const modal = document.getElementById('projectModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    // Handle hash on load and back/forward
+    function handleHash() {
+        const hash = window.location.hash;
+        if (hash.startsWith('#project-')) {
+            const projectId = hash.split('-')[1];
+            if (projectId) {
+                openProjectModal(projectId);
+            }
+        }
+    }
+
+    window.addEventListener('load', handleHash);
+    window.addEventListener('hashchange', handleHash);
+</script>
+{% endblock %}
